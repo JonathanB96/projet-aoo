@@ -1,20 +1,25 @@
-require("dotenv").config();
-const express = require("express");
-const morgan = require("morgan");
+class Participation {
+  constructor({
+    activite_id,
+    membre_id,
+    statut = "INSCRIT",
+    date_inscription = null,
+  }) {
+    this.activite_id = activite_id;
+    this.membre_id = membre_id;
+    this.statut = statut;
+    this.date_inscription = date_inscription;
+  }
 
-const app = express();
+  valider() {
+    if (!this.activite_id) throw new Error("activite_id requis");
+    if (!this.membre_id) throw new Error("membre_id requis");
 
-// Middlewares
-app.use(express.json());
-app.use(morgan("dev"));
+    const valides = ["INSCRIT", "PRESENT", "ABSENT"];
+    if (!valides.includes(this.statut)) {
+      throw new Error("statut invalide (INSCRIT, PRESENT, ABSENT)");
+    }
+  }
+}
 
-// Route test
-app.get("/", (req, res) => {
-  res.json({ message: "API AOO: serveur OK ✅" });
-});
-
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`✅ Serveur démarré sur http://localhost:${PORT}`);
-});
+module.exports = Participation;
